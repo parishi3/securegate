@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TMPDIR="$HOME/securegate-app"
+TMPDIR="C:/Users/p4par/securegate-app"
 
 echo "=================================="
 echo "   SecureGate — SAST Demo"
@@ -13,14 +13,14 @@ echo ""
 curl -s -X POST http://localhost:3000/scan/code \
   -H "Content-Type: application/json" \
   -d "{\"code\": \"const password = 'admin123'; eval(userInput); const apiKey = 'sk-prod-abc123'; const query = 'SELECT * FROM users WHERE id = ' + userId;\"}" \
-  > "$TMPDIR/sast_output.json"
+  > "C:/Users/p4par/securegate-app/sast_output.json"
 
 echo "Scan complete. Results:"
 echo ""
 
 node -e "
 const fs = require('fs');
-const r = JSON.parse(fs.readFileSync('$TMPDIR/sast_output.json', 'utf8'));
+const r = JSON.parse(fs.readFileSync('C:/Users/p4par/securegate-app/sast_output.json', 'utf8'));
 console.log('Total vulnerabilities:', r.summary.totalVulnerabilities);
 console.log('HIGH:  ', r.summary.high);
 console.log('MEDIUM:', r.summary.medium);
@@ -45,16 +45,16 @@ echo ""
 echo ">>> Processing through Lambda 2 — generating PR comment..."
 echo ""
 
-SAST_DATA=$(cat "$TMPDIR/sast_output.json")
+SAST_DATA=$(cat "C:/Users/p4par/securegate-app/sast_output.json")
 
 curl -s -X POST http://localhost:4002/results \
   -H "Content-Type: application/json" \
   -d "{\"scanId\": \"abc123def456\", \"sastResults\": $SAST_DATA, \"prNumber\": \"42\", \"repo\": \"parishi3/test-repo\"}" \
-  > "$TMPDIR/lambda2_output.json"
+  > "C:/Users/p4par/securegate-app/lambda2_output.json"
 
 node -e "
 const fs = require('fs');
-const r = JSON.parse(fs.readFileSync('$TMPDIR/lambda2_output.json', 'utf8'));
+const r = JSON.parse(fs.readFileSync('C:/Users/p4par/securegate-app/lambda2_output.json', 'utf8'));
 console.log('Status:       ', r.status ? r.status.toUpperCase() : 'unknown');
 console.log('Merge blocked:', r.blocked);
 if (r.findings) {
