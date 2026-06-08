@@ -143,7 +143,56 @@ const vulnerabilityRules = [
       { regex: /DES|RC4|RC2|Blowfish/gi, desc: 'Weak encryption algorithm' }
     ],
     message: 'Weak cryptographic algorithm detected. Use stronger alternatives like SHA256 or AES-256.'
-  }
+  },
+  // CHANGES MADE
+  {
+  id: 'OPEN_REDIRECT',
+  name: 'Open Redirect',
+  severity: 'MEDIUM',
+  patterns: [
+    { regex: /res\.redirect\s*\(\s*req\.(body|query|params)/gi, desc: 'User input in redirect' },
+    { regex: /res\.redirect\s*\([^)]*\+\s*req\./gi, desc: 'User input concatenated in redirect' },
+    { regex: /window\.location\s*=\s*[^'"]/gi, desc: 'Dynamic window.location assignment' }
+  ],
+  message: 'Potential open redirect vulnerability. Validate redirect URLs against an allowlist.'
+},
+{
+  id: 'PROTOTYPE_POLLUTION',
+  name: 'Prototype Pollution',
+  severity: 'HIGH',
+  patterns: [
+    { regex: /\.__proto__\s*=/gi, desc: 'Direct __proto__ assignment' },
+    { regex: /Object\.assign\s*\(\s*[^)]*req\.(body|query|params)/gi, desc: 'User input in Object.assign' },
+    { regex: /\[['"]__proto__['"]\]/gi, desc: 'Bracket notation __proto__ access' },
+    { regex: /constructor\.prototype/gi, desc: 'Prototype manipulation detected' }
+  ],
+  message: 'Potential prototype pollution vulnerability. Sanitize user input before merging into objects.'
+},
+{
+  id: 'SSRF',
+  name: 'Server-Side Request Forgery (SSRF)',
+  severity: 'HIGH',
+  patterns: [
+    { regex: /fetch\s*\(\s*req\.(body|query|params)/gi, desc: 'User input in fetch URL' },
+    { regex: /axios\.(get|post|put|delete)\s*\(\s*req\.(body|query|params)/gi, desc: 'User input in axios request' },
+    { regex: /http\.(get|request)\s*\(\s*req\.(body|query|params)/gi, desc: 'User input in http.get' },
+    { regex: /fetch\s*\([^)]*\+\s*req\./gi, desc: 'User input concatenated in fetch URL' }
+  ],
+  message: 'Potential SSRF vulnerability. Validate and whitelist URLs before making server-side requests.'
+},
+{
+  id: 'INSECURE_COOKIE',
+  name: 'Insecure Cookie Configuration',
+  severity: 'MEDIUM',
+  patterns: [
+    { regex: /res\.cookie\s*\([^)]*\)/g, desc: 'Cookie set without security flags check' },
+    { regex: /cookie\s*:\s*\{[^}]*(?!httpOnly)[^}]*\}/gi, desc: 'Cookie missing httpOnly flag' },
+    { regex: /cookie\s*:\s*\{[^}]*(?!secure)[^}]*\}/gi, desc: 'Cookie missing secure flag' },
+    { regex: /document\.cookie\s*=/gi, desc: 'Direct document.cookie assignment' }
+  ],
+  message: 'Insecure cookie configuration. Ensure cookies have httpOnly, secure, and sameSite flags set.'
+}
+  
 ];
 
 // Get line number from character index
