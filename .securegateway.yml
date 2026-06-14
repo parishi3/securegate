@@ -1,0 +1,7 @@
+api:
+  port: 3000
+  start: "npm start"
+  healthcheck: /health
+  endpoints:
+    - path: /api/users
+      method: GET
