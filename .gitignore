@@ -1,7 +1,0 @@
-node_modules/
-sast_output.json
-sast_output2.json
-sast_output3.json
-*.json
-!package.json
-!package-lock.json
