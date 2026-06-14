@@ -1,0 +1,19 @@
+name: SecureGate Security Scan
+
+on: [pull_request]
+
+permissions:
+  pull-requests: write
+  statuses: write
+
+jobs:
+  scan:
+    uses: parishi3/SecureGateway/.github/workflows/reusable-scan.yml@main
+    with:
+      ecr-repo: 547846986520.dkr.ecr.us-east-1.amazonaws.com/securegateway
+    secrets:
+      api-gateway-url: ${{ secrets.SECUREGATEWAY_API_GATEWAY_URL }}
+      api-key: ${{ secrets.SECUREGATEWAY_API_KEY }}
+      aws-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-secret-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
